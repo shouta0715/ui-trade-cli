@@ -1,13 +1,13 @@
 import arg from "arg";
 import { exec } from "@/server/command";
 
-const args = arg(
+const inputs = arg(
   {},
   {
     permissive: true,
   }
 );
-const execCommandName = args._[0] || "preview";
-const execCommandArgs = args._.slice(1);
+const command = inputs._[0] || "preview";
+const args = inputs._.slice(1);
 
-exec(execCommandName, execCommandArgs);
+exec(command, args);

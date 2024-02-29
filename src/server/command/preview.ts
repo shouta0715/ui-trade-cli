@@ -1,6 +1,8 @@
 import arg from "arg";
-import { startServer } from "@/server/app";
-import { CliExecFn } from "@/server/types";
+import { ServerOptions, newApp, startServer } from "@/server/app";
+import { previewHelpText } from "@/server/command/text";
+import { logger } from "@/server/log";
+import { CommandFn } from "@/server/types";
 
 function parseArgs(argv?: string[]) {
   try {
@@ -8,7 +10,6 @@ function parseArgs(argv?: string[]) {
       {
         // Types
         "--port": Number,
-        "--no-watch": Boolean,
         "--open": Boolean,
         "--help": Boolean,
         "--host": String,
@@ -20,32 +21,36 @@ function parseArgs(argv?: string[]) {
       { argv }
     );
   } catch (e: unknown) {
-    console.error(e);
+    if (e instanceof arg.ArgError && e.code === "ARG_UNKNOWN_OPTION") {
+      logger().error("Unknown option").run();
+
+      return null;
+    }
+
+    logger().error("An error occurred").run();
 
     return null;
   }
 }
 
-export const exec: CliExecFn = async (argv) => {
+export const exec: CommandFn = async (argv) => {
   const args = parseArgs(argv);
   if (args === null) return;
 
   if (args["--help"]) {
-    console.log("Usage: preview [options]");
+    logger().text(previewHelpText).run();
 
     return;
   }
 
-  // const shouldWatch = args["--no-watch"] !== true;
-  // const options = {
-  //   app: createApp(),
-  //   port: args["--port"] || 8000,
-  //   shouldOpen: args["--open"] === true,
-  //   hostname: args["--host"],
-  // };
+  const options: ServerOptions = {
+    app: newApp(),
+    port: args["--port"] || 8000,
+    open: args["--open"] || false,
+    hostname: args["--host"] || "localhost",
+  };
 
-  await startServer();
-  console.log("Server started");
+  await startServer(options);
 
   // if (shouldWatch) {
   //   await startLocalChangesWatcher(
