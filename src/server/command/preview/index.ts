@@ -1,8 +1,8 @@
 import { ServerOptions, newApp, startServer } from "@/server/app";
-import { previewHelpText } from "@/server/command/text";
 import { logger } from "@/server/log";
 import { CommandFn } from "@/server/types";
 import { parseArgs } from "@/server/utils";
+import { previewHelpText } from "@/server/utils/text";
 
 const type = {
   "--port": Number,

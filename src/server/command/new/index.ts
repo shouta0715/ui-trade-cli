@@ -1,7 +1,7 @@
-import { newUIHelpText } from "@/server/command/text";
 import { logger } from "@/server/log";
 import { CommandFn } from "@/server/types";
 import { parseArgs } from "@/server/utils";
+import { newUIHelpText } from "@/server/utils/text";
 import { DefaultUIInfo, PreviewType, createNewUI } from "@/server/utils/ui";
 
 const type = {

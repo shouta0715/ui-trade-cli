@@ -1,7 +1,7 @@
 import * as init from "@/server/command/init";
 import * as newUI from "@/server/command/new";
 import * as preview from "@/server/command/preview";
-import { helpText } from "@/server/command/text";
+import { helpText } from "@/server/utils/text";
 import { logger } from "@/server/log";
 
 type Commands = { [command: string]: (args: string[]) => void };
