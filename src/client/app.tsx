@@ -1,15 +1,11 @@
-import { useEffect } from "react";
+import { useWatchFile } from "@/client/features/subscription/useSubscription";
 
 function App() {
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/users");
+  useWatchFile(() => {
+    console.log("🚀 File Changed");
+  });
 
-      console.log(await res.json());
-    })();
-  }, []);
-
-  return <div className="App">test</div>;
+  return <div className="">test</div>;
 }
 
 export default App;
