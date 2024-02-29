@@ -14,8 +14,12 @@ export function useFileSubscriptionProvider() {
     const pt = window.location.protocol === "https:" ? "wss" : "ws";
 
     if (wsRef.current === null) {
-      console.log("🚀 Create WebSocket", `${pt}://${window.location.host}`);
-      wsRef.current = new WebSocket(`${pt}://${window.location.host}`);
+      const url =
+        process.env.NODE_ENV === "development"
+          ? `${pt}://${window.location.host}`
+          : `${pt}://localhost:8000`;
+
+      wsRef.current = new WebSocket(url);
     }
 
     const ws = wsRef.current;

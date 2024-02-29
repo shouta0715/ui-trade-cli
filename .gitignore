@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+ui
+images
+
+!src/ui
+!src/ui/**/*
+!src/images
+!src/images/**/*
