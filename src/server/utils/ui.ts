@@ -41,7 +41,7 @@ export const createNewUI = (info: DefaultUIInfo) => {
     `title: "${title.replace(/"/g, '\\"')}"`,
     `image: "${image}"`,
     `type: "${type}" # html: htmlファイルで表示 / react: jsx or tsxファイルで表示`,
-    `published: ${published}`,
+    `published: ${published ? "true" : "false"}`,
     "---",
   ]
     .filter((v) => v)

@@ -23,10 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 
-ui
-images
+ui/*
+images/*
 
-!src/ui
-!src/ui/**/*
-!src/images
-!src/images/**/*
+!src/*/ui
+!src/*/ui/**/*
+
+!src/*/images
+!src/*/images/**/*
+
+
+

@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import history from "connect-history-api-fallback";
 import express, { Express } from "express";
 import openWindow from "open";
+import { fileHandler, filesHandler } from "@/server/api/ui";
 import { logger } from "@/server/log";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,9 +15,8 @@ const __dirname = path.dirname(__filename);
 export function newApp() {
   const app = express();
 
-  app.get("/api/users", (req, res) => {
-    return res.json({ users: [{ name: "John" }] });
-  });
+  app.get("/api/ui/:slug", fileHandler);
+  app.get("/api/ui/", filesHandler);
 
   app.use(history());
 
