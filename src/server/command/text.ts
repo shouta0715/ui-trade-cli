@@ -29,3 +29,25 @@ Example:
 
 --------------------------
 `;
+
+export const newUIHelpText = `
+--------------------------
+
+新しくUIを作成します。
+画像は images/ フォルダに保存してください。
+
+  ui-trade new:UI [options]
+
+Options:
+
+    --title, -t <title> UIのタイトルを指定します。
+    --image, -i <image> ファイル名を指定します。
+    --type, -t <type> プレビューのタイプを指定します。 (html | react)
+    --help, -h ヘルプを表示します。
+
+Example:
+
+  ui-trade new:UI --title "new ui" --image example.png --type react
+
+--------------------------
+`;

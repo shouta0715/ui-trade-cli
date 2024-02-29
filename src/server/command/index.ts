@@ -1,3 +1,5 @@
+import * as init from "@/server/command/init";
+import * as newUI from "@/server/command/new";
 import * as preview from "@/server/command/preview";
 import { helpText } from "@/server/command/text";
 import { logger } from "@/server/log";
@@ -7,7 +9,8 @@ type Commands = { [command: string]: (args: string[]) => void };
 export const commands: Commands = {
   preview: (args: string[]) => preview.exec(args),
   "--help": () => logger().text(helpText).run(),
-  new: () => logger().text("new").run(),
+  "new:UI": (args: string[]) => newUI.exec(args),
+  init: (args: string[]) => init.exec(args),
 };
 
 export async function exec(command: string, args: string[]) {

@@ -7,7 +7,6 @@ import express, { Express } from "express";
 import openWindow from "open";
 import { logger } from "@/server/log";
 
-// 現在のファイルのディレクトリパスを取得
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
