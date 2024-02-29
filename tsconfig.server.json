@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2019", // Node.jsがサポートするECMAScriptバージョンに合わせる
-    "module": "CommonJS", // Node.jsのモジュールシステム
+    "module": "ES2015", // Node.jsのモジュールシステム
     "lib": ["ES2019"], // Node.js環境に適したライブラリ
     "allowJs": true, // JavaScriptファイルのコンパイルを許可
     "skipLibCheck": true,

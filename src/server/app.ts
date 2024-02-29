@@ -1,25 +1,27 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-underscore-dangle */
+import { Server, createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import history from "connect-history-api-fallback";
-import express from "express";
+import express, { Express } from "express";
+import openWindow from "open";
+import { fileHandler, filesHandler } from "@/server/api/ui";
+import { logger } from "@/server/log";
 
-// 現在のファイルのディレクトリパスを取得
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function createApp() {
+export function newApp() {
   const app = express();
 
-  app.get("/api/users", (req, res) => {
-    return res.json({ users: [{ name: "John Doe" }] });
-  });
+  app.get("/api/ui/:slug", fileHandler);
+  app.get("/api/ui/", filesHandler);
 
   app.use(history());
 
   app.use(
-    express.static(path.join(__dirname, "../../dist/client"), {
+    express.static(path.join(__dirname, "../client/"), {
       setHeaders: (res) => {
         res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
       },
@@ -29,37 +31,42 @@ export function createApp() {
   return app;
 }
 
-export async function startServer() {
-  const app = createApp();
+export type ServerOptions = {
+  app: Express;
+  port: number;
+  open: boolean;
+  hostname: string;
+};
+
+export async function startServer(options: ServerOptions): Promise<Server> {
+  const { app, port, hostname, open } = options;
+
+  const server = createServer(app);
 
   return new Promise((resolve, reject) => {
-    app
-      .listen(3421)
+    server
+      .listen(port, hostname)
       .once("listening", () => {
-        if (process.env.TS_NODE_DEV) {
-          console.log("🚀 Server is ready.");
-        } else {
-          // const { name, host } = resolveHostname(hostname);
+        logger().info(`🚀 Server is ready at http://${hostname}:${port}`).run();
 
-          console.log(`👀 Preview: )`);
-          // if (host) console.log(`🌏 NetWork: http://${host}:${port}`);
-        }
-        // if (shouldOpen) open(`http://localhost:${port}`);
-        // resolve(server);
+        if (open) openWindow(`http://${hostname}:${port}`);
+
+        resolve(server);
       })
       .once("error", async (err) => {
         if (err.message.includes("EADDRINUSE")) {
-          console.log(
-            `💡 ポートは既に使用されています。別のポートで起動中…`,
-            err
-          );
-          // const server = await startServer({ ...options, port: port + 1 });
-          // resolve(server);
+          logger()
+            .warn(`Port ${port} は すでに使用されています。`)
+            .next()
+            .text(`別のポートで起動します...`)
+            .run();
+
+          const server2 = await startServer({ ...options, port: port + 1 });
+
+          resolve(server2);
         } else {
           reject(err);
         }
       });
   });
 }
-
-startServer();
