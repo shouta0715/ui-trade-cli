@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2019", // Node.jsがサポートするECMAScriptバージョンに合わせる
+    "module": "CommonJS", // Node.jsのモジュールシステム
+    "lib": ["ES2019"], // Node.js環境に適したライブラリ
+    "allowJs": true, // JavaScriptファイルのコンパイルを許可
+    "skipLibCheck": true,
+    "esModuleInterop": true, // CommonJSモジュールとの互換性のために有効にする
+    "allowSyntheticDefaultImports": true, // デフォルトインポートを許可
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "Node", // Node.jsのモジュール解決戦略を使用
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true, // コンパイル時にファイルを出力しない
+    "baseUrl": ".", // ベースURLの設定
+    "paths": {
+      "@/*": ["./src/*"] // エイリアスの設定
+    }
+  },
+  "include": ["src/server/"], // コンパイル対象のディレクトリ
+  "exclude": ["src/client/", "node_modules"], // 除外対象のディレクトリ
+  "references": [] // プロジェクト参照を使用しない場合は空にするか、セクションを削除
+}

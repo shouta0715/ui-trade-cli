@@ -4,16 +4,22 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3333",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "start": "tsx --tsconfig  tsconfig.server.json src/server/index.ts",
     "prepare": "husky"
   },
   "dependencies": {
+    "connect-history-api-fallback": "^2.0.0",
+    "express": "^4.18.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/connect-history-api-fallback": "^1.5.4",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.22",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
@@ -33,6 +39,8 @@
     "lint-staged": "^15.2.2",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.7.1",
     "typescript": "^4.9.3",
     "vite": "^4.0.0"
   },
