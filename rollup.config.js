@@ -9,8 +9,10 @@ const config = {
 
   output: {
     dir: "dist/server",
+    format: "module",
     minifyInternalExports: true,
   },
+
   plugins: [
     typescript({
       rootDir: "src",
