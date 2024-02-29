@@ -1,40 +1,22 @@
-import arg from "arg";
 import { ServerOptions, newApp, startServer } from "@/server/app";
 import { previewHelpText } from "@/server/command/text";
 import { logger } from "@/server/log";
 import { CommandFn } from "@/server/types";
+import { parseArgs } from "@/server/utils";
 
-function parseArgs(argv?: string[]) {
-  try {
-    return arg(
-      {
-        // Types
-        "--port": Number,
-        "--open": Boolean,
-        "--help": Boolean,
-        "--host": String,
+const type = {
+  "--port": Number,
+  "--open": Boolean,
+  "--help": Boolean,
+  "--host": String,
+  "--no-watch": Boolean,
 
-        // Alias
-        "-p": "--port",
-        "-h": "--help",
-      },
-      { argv }
-    );
-  } catch (e: unknown) {
-    if (e instanceof arg.ArgError && e.code === "ARG_UNKNOWN_OPTION") {
-      logger().error("Unknown option").run();
-
-      return null;
-    }
-
-    logger().error("An error occurred").run();
-
-    return null;
-  }
-}
+  "-p": "--port",
+  "-h": "--help",
+};
 
 export const exec: CommandFn = async (argv) => {
-  const args = parseArgs(argv);
+  const args = parseArgs(type, argv);
   if (args === null) return;
 
   if (args["--help"]) {
@@ -52,10 +34,12 @@ export const exec: CommandFn = async (argv) => {
 
   await startServer(options);
 
-  // if (shouldWatch) {
-  //   await startLocalChangesWatcher(
-  //     server,
-  //     `${getWorkingPath("")}/{articles,books}/**/*`
-  //   );
-  // }
+  const watch = !args["--no-watch"];
+
+  if (watch) {
+    // await startLocalChangesWatcher(
+    //   server,
+    //   `${getWorkingPath("")}/{articles,books}/**/*`
+    // );
+  }
 };

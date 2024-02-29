@@ -21,6 +21,7 @@ Options:
     --open, -o ブラウザで開きます。
     --host, -h <host> ホスト名を指定します。
     --help, -h ヘルプを表示します。
+    --no-watch ファイルの変更を監視しません。
 
 Example:
 
