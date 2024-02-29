@@ -14,13 +14,13 @@ export function newApp() {
   const app = express();
 
   app.get("/api/users", (req, res) => {
-    return res.json({ users: [{ name: "John Doe" }] });
+    return res.json({ users: [{ name: "John" }] });
   });
 
   app.use(history());
 
   app.use(
-    express.static(path.join(__dirname, "../../dist/client"), {
+    express.static(path.join(__dirname, "../client/"), {
       setHeaders: (res) => {
         res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
       },

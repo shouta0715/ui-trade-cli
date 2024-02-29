@@ -4,3 +4,4 @@ bun.lockb
 public
 *.config.js
 *.config.ts
+dist

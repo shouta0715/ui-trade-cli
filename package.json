@@ -4,19 +4,24 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3333",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "start": "tsx --tsconfig  tsconfig.server.json src/server/index.ts",
+    "dev:client": "vite --port 3333",
+    "dev:server": "rollup -c rollup.config.js --watch",
+    "run:nodemon": "nodemon --watch dist/server/index.js --exec 'node dist/server/index.js preview'",
+    "dev": "bun run:nodemon",
+    "build": "rollup -c rollup.config.js && vite build",
     "prepare": "husky"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.2",
+    "@rollup/plugin-typescript": "^11.1.6",
     "chalk": "^5.3.0",
     "connect-history-api-fallback": "^2.0.0",
     "express": "^4.18.2",
+    "nodemon": "^3.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "rollup": "^4.12.0",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "devDependencies": {
     "@types/connect-history-api-fallback": "^1.5.4",
