@@ -1,4 +1,5 @@
 import { ServerOptions, newApp, startServer } from "@/server/app";
+import { startFileWatcher } from "@/server/command/preview/subscription";
 import { logger } from "@/server/log";
 import { CommandFn } from "@/server/types";
 import { parseArgs } from "@/server/utils";
@@ -32,14 +33,13 @@ export const exec: CommandFn = async (argv) => {
     hostname: args["--host"] || "localhost",
   };
 
-  await startServer(options);
+  const server = await startServer(options);
 
   const watch = !args["--no-watch"];
 
+  const filePath = `${process.cwd()}/ui/**/*`;
+
   if (watch) {
-    // await startLocalChangesWatcher(
-    //   server,
-    //   `${getWorkingPath("")}/{articles,books}/**/*`
-    // );
+    await startFileWatcher({ server, filePath });
   }
 };

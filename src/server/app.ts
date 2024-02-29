@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-underscore-dangle */
+import { Server, createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import history from "connect-history-api-fallback";
@@ -37,18 +38,20 @@ export type ServerOptions = {
   hostname: string;
 };
 
-export async function startServer(options: ServerOptions) {
+export async function startServer(options: ServerOptions): Promise<Server> {
   const { app, port, hostname, open } = options;
 
+  const server = createServer(app);
+
   return new Promise((resolve, reject) => {
-    app
+    server
       .listen(port, hostname)
       .once("listening", () => {
         logger().info(`🚀 Server is ready at http://${hostname}:${port}`).run();
 
         if (open) openWindow(`http://${hostname}:${port}`);
 
-        resolve(app);
+        resolve(server);
       })
       .once("error", async (err) => {
         if (err.message.includes("EADDRINUSE")) {
@@ -58,9 +61,9 @@ export async function startServer(options: ServerOptions) {
             .text(`別のポートで起動します...`)
             .run();
 
-          const server = await startServer({ ...options, port: port + 1 });
+          const server2 = await startServer({ ...options, port: port + 1 });
 
-          resolve(server);
+          resolve(server2);
         } else {
           reject(err);
         }
