@@ -1,11 +1,5 @@
-import { useWatchFile } from "@/client/features/subscription/useSubscription";
+import { Routes } from "@/client/routes";
 
-function App() {
-  useWatchFile(() => {
-    console.log("🚀 File Changed");
-  });
-
-  return <div className="">test</div>;
-}
+const App = () => <Routes />;
 
 export default App;
