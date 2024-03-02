@@ -1,10 +1,14 @@
 import { Route, Switch } from "wouter";
-import { Home } from "@/client/features/pages/components";
 
 export function Routes() {
   return (
     <Switch>
-      <Route component={Home} path="/" />
+      <Route path="/">
+        <div>Home</div>
+      </Route>
+      <Route path="/ui/:slug">
+        <div>UI</div>
+      </Route>
       <Route>404: No such page!</Route>
     </Switch>
   );

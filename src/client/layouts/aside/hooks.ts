@@ -1,7 +1,7 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { throwHttpErrorFromStatus } from "@/client/libs/errors";
-import { UISchema } from "@/schema";
+import { AsideUI } from "@/client/types";
 
 async function getUIList({ limit, offset }: { limit: number; offset: number }) {
   const response = await fetch(`/api/ui?limit=${limit}&offset=${offset}`);
@@ -11,30 +11,26 @@ async function getUIList({ limit, offset }: { limit: number; offset: number }) {
   const data = await response.json();
 
   return data as {
-    items: Pick<UISchema, "title"> & { slug: string }[];
+    items: AsideUI[];
     hasMore: boolean;
   };
 }
 
 export function useQueryUIList() {
-  const [query, setQuery] = useState({
-    limit: 10,
-    offset: 0,
-  });
+  const { isPending, data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery({
+      queryKey: ["ui-list"],
+      queryFn: ({ pageParam }) => getUIList({ ...pageParam }),
+      initialPageParam: { limit: 10, offset: 0 },
+      getNextPageParam: (lastPage, _, lastPageParam) => {
+        if (!lastPage.hasMore) return undefined;
 
-  const { isPending, data } = useSuspenseInfiniteQuery({
-    queryKey: ["ui-list"],
-    queryFn: () => getUIList({ ...query }),
-    initialPageParam: { limit: 10, offset: 0 },
-    getNextPageParam: (lastPage, _, lastPageParam) => {
-      if (!lastPage.hasMore) return undefined;
-
-      return {
-        limit: 10,
-        offset: lastPageParam.offset + 10,
-      };
-    },
-  });
+        return {
+          limit: 10,
+          offset: lastPageParam.offset + 10,
+        };
+      },
+    });
 
   const items = useMemo(() => {
     if (!data.pages) return [];
@@ -43,9 +39,9 @@ export function useQueryUIList() {
   }, [data.pages]);
 
   return {
-    isPending,
+    isPending: isPending || isFetchingNextPage,
     data: items,
-    setQuery,
-    query,
+    hasNextPage,
+    fetchNextPage,
   };
 }

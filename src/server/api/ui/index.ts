@@ -47,7 +47,9 @@ export const filesHandler: Handler = (req, res) => {
       Number(offset ?? 0) + Number(limit ?? 10)
     );
 
-    const markdowns: (Pick<UISchema, "title"> & { slug: string })[] = [];
+    const markdowns: (Pick<UISchema, "title" | "published"> & {
+      slug: string;
+    })[] = [];
 
     for (const file of items) {
       const filePath = `${baseUIFolder}/${file}/document.md`;
@@ -56,7 +58,11 @@ export const filesHandler: Handler = (req, res) => {
 
       if (!markdown) continue;
 
-      markdowns.push({ title: markdown.title, slug: file });
+      markdowns.push({
+        title: markdown.title,
+        slug: file,
+        published: markdown.published,
+      });
     }
     const hasMore =
       sortedFiles.length > Number(offset ?? 0) + Number(limit ?? 10);
