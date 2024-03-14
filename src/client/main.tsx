@@ -3,12 +3,15 @@ import ReactDOM from "react-dom/client";
 
 import "./index.css";
 import App from "@/client/app";
-import { SubscriptionProvider } from "@/client/features/subscription";
+import { Providers } from "@/client/features/providers";
+import { Layout } from "@/client/layouts";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <SubscriptionProvider>
-      <App />
-    </SubscriptionProvider>
+    <Providers>
+      <Layout>
+        <App />
+      </Layout>
+    </Providers>
   </React.StrictMode>
 );
