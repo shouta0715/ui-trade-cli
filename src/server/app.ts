@@ -1,72 +1,47 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-underscore-dangle */
-import { Server, createServer } from "http";
+import { spawn } from "child_process";
 import path from "path";
 import { fileURLToPath } from "url";
-import history from "connect-history-api-fallback";
-import express, { Express } from "express";
-import openWindow from "open";
-import { fileHandler, filesHandler } from "@/server/api/ui";
-import { logger } from "@/server/log";
+import windowOpen from "open";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export function newApp() {
-  const app = express();
-
-  app.get("/api/ui/:slug", fileHandler);
-  app.get("/api/ui/", filesHandler);
-
-  app.use(history());
-
-  app.use(
-    express.static(path.join(__dirname, "../client/"), {
-      setHeaders: (res) => {
-        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-      },
-    })
-  );
-
-  return app;
-}
-
 export type ServerOptions = {
-  app: Express;
   port: number;
   open: boolean;
   hostname: string;
 };
 
-export async function startServer(options: ServerOptions): Promise<Server> {
-  const { app, port, hostname, open } = options;
+async function startNextApp({ port, hostname, open }: ServerOptions) {
+  const serverPath = `${__dirname}/../.next/standalone/server.js`;
 
-  const server = createServer(app);
+  // 環境変数を設定
+  const env = { ...process.env, PORT: String(port), HOST: hostname };
 
-  return new Promise((resolve, reject) => {
-    server
-      .listen(port, hostname)
-      .once("listening", () => {
-        logger().info(`🚀 Server is ready at http://${hostname}:${port}`).run();
-
-        if (open) openWindow(`http://${hostname}:${port}`);
-
-        resolve(server);
-      })
-      .once("error", async (err) => {
-        if (err.message.includes("EADDRINUSE")) {
-          logger()
-            .warn(`Port ${port} は すでに使用されています。`)
-            .next()
-            .text(`別のポートで起動します...`)
-            .run();
-
-          const server2 = await startServer({ ...options, port: port + 1 });
-
-          resolve(server2);
-        } else {
-          reject(err);
-        }
-      });
+  // server.jsを子プロセスとして実行
+  const serverProcess = spawn("node", [serverPath], {
+    env,
+    stdio: ["inherit", "inherit", "inherit"],
   });
+
+  return new Promise<void>((resolve, reject) => {
+    serverProcess.once("spawn", () => {
+      if (open) {
+        windowOpen(`http://${hostname}:${port}`);
+      }
+    });
+    serverProcess.on("close", (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`Next process exited with code ${code}`));
+      }
+    });
+  });
+}
+
+export function startServer(options: ServerOptions) {
+  return startNextApp(options);
 }
