@@ -1,5 +1,4 @@
-import { ServerOptions, newApp, startServer } from "@/server/app";
-import { startFileWatcher } from "@/server/command/preview/subscription";
+import { ServerOptions, startServer } from "@/server/app";
 import { logger } from "@/server/log";
 import { CommandFn } from "@/server/types";
 import { parseArgs } from "@/server/utils";
@@ -27,19 +26,14 @@ export const exec: CommandFn = async (argv) => {
   }
 
   const options: ServerOptions = {
-    app: newApp(),
     port: args["--port"] || 8000,
     open: args["--open"] || false,
     hostname: args["--host"] || "localhost",
   };
 
-  const server = await startServer(options);
-
-  const watch = !args["--no-watch"];
-
-  const filePath = `${process.cwd()}/ui/**/*`;
-
-  if (watch) {
-    await startFileWatcher({ server, filePath });
+  try {
+    await startServer(options);
+  } catch (error) {
+    logger().error("サーバーが起動できませんでした。").run();
   }
 };
